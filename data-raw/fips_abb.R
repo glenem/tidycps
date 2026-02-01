@@ -8,14 +8,15 @@
 ###########################
 
 library(pacman)
-pacman::p_load('tidyverse',
+pacman::p_load('devtools',
+               'tidyverse',
                'httr2',
                "glue",
                "jsonlite"
 )
 
-source("R/cpsR.R")
+load_all()
 
 fips_abb <- get_fip_abb_cw(year_val = 2025, month_val = 'dec')
 
-usethis::use_data(fips_abb, overwrite = TRUE)
+usethis::use_data(fips_abb, overwrite = TRUE, internal = TRUE)

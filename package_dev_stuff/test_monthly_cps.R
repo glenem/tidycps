@@ -2,18 +2,19 @@
 rm(list = ls())
 
 library(pacman)
-pacman::p_load('tidyverse', 
-               'httr2', 
+pacman::p_load('devtools',
+               'tidyverse',
+               'httr2',
                "glue",
                "jsonlite"
 )
 
-source("4. Code/cpsR.R")
-
+load_all()
 
 vars <- get_basic_cps_vars()
 
-df <- get_basic_cps(variables = c(
+df <- get_basic_cps(year_val = 2025, month_val = 'dec',
+  variables = c(
   "PRPERTYP", # person type
   "PRTAGE", # age
   "PESEX", # sex
@@ -29,8 +30,8 @@ state_val = 'fl'
 # get an annual time series for 2025
 # Note OCT is not available
 df <- map_dfr(c(c(1:9), c(11:12)), ~{
-  get_basic_cps(year_val = 2025, 
-                   month_val=.x, 
+  get_basic_cps(year_val = 2025,
+                   month_val=.x,
                    variables = c(
     "PRPERTYP", # person type
     "PRTAGE", # age

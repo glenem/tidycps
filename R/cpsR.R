@@ -48,6 +48,7 @@ get_fip_abb_cw <- function(year_val=year(today()),
 }
 
 fip_abb_crosswalk<- function(abb){
+  # fips_abb, internal data loaded
   abb_num <- as.character(fips_abb[match(str_to_upper(abb), fips_abb$values), "ind"])
   return(abb_num)
 }

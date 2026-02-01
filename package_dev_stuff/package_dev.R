@@ -18,6 +18,9 @@ use_package("httr2")
 use_package("glue")
 use_package("jsonlite")
 
+# connect to github
+usethis::use_github()
+
 # Check directory
 getwd()
 

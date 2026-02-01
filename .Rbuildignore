@@ -1,4 +1,5 @@
 ^tidycps\.Rproj$
 ^\.Rproj\.user$
 ^data-raw$
+^package_dev_stuff$
 ^LICENSE\.md$
