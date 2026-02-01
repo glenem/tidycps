@@ -13,15 +13,13 @@
 #
 
 # packages ----
-library(pacman)
-pacman::p_load('tidyverse',
-               'httr2',
-               "glue",
-               "jsonlite"
-               )
-
-
-setwd("C:/Users/glenm/OneDrive/Learning Projects/Current Population Survey - CPS")
+use_package("dplyr")
+use_package("lubridate")
+use_package("stringr")
+use_package("magrittr")
+use_package("httr2")
+use_package("glue")
+use_package("jsonlite")
 
 # Function to be used for the defaults of get_basic_cps_vars and get_basic_cps -----
 # to transform them into a format usable for the API call
