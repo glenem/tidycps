@@ -1,18 +1,31 @@
-library('devtools')
+library(pacman)
+pacman::p_load('devtools', 'available')
 
 getwd()
+
+# Check availability of package name
+available('tidycps')
 
 # to work on the package
 use_r('cpsR')
 
-source("R/cpsR.R") # works
+# packages, just need to run once. Already ran: look at the description
+use_package("dplyr")
+use_package("lubridate")
+use_package("stringr")
+use_package("magrittr")
+use_package("httr2")
+use_package("glue")
+use_package("jsonlite")
 
-rename_files("R/cpsR.R", "cpsR.R")
+# Check directory
+getwd()
 
-list.files("R")
-devtools::load_all() # does not work
+# load the package
+load_all()
 
-
+# Run documentation
 document()
 
-devtools::check()
+# Check for issues
+check()

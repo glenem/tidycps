@@ -3,23 +3,8 @@
 # Functions to access data from the basic monthly current population survey (CPS)
 #
 #
-###########################
+############################
 
-# Notes
-# get_basic_cps to dos:
-# 1. have a default weight and the flexibility for users to choose one or more weights - check
-# 2. Set up a state fips to name cross-walk for better understanding
-# 3. Create a column for the month, year, and date
-#
-
-# packages ----
-use_package("dplyr")
-use_package("lubridate")
-use_package("stringr")
-use_package("magrittr")
-use_package("httr2")
-use_package("glue")
-use_package("jsonlite")
 
 # Function to be used for the defaults of get_basic_cps_vars and get_basic_cps -----
 # to transform them into a format usable for the API call
@@ -63,8 +48,7 @@ get_fip_abb_cw <- function(year_val=year(today()),
 }
 
 fip_abb_crosswalk<- function(abb){
-  df <- readRDS("Data/fips_abb_crosswalk.rds")
-  abb_num <- as.character(df[match(str_to_upper(abb), df$values), "ind"])
+  abb_num <- as.character(fips_abb[match(str_to_upper(abb), fips_abb$values), "ind"])
   return(abb_num)
 }
 
