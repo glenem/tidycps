@@ -3,7 +3,10 @@ Title: Get Basic Monthly CPS Microdata from API and Load as 'tidyverse' Ready Da
 Version: 0.0.0.9000
 Authors@R: 
     person("Glen", "Martin", , "glenem3@gmail.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+Description: An integrated R interface to the United States Census Bureau's 
+    Current Population Survey (CPS) API, primarily for the basic monthly CPS. Allow R users to return the 
+    basic monthly CPS microdata as tidyverse-ready data frames. Includes additional functions to transform various 
+    CPS variables into indicators for ease in generating nationally representative weighted estimates.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -14,7 +17,8 @@ Imports:
     httr2,
     jsonlite,
     lubridate,
-    stringr
+    stringr,
+    utils
 Depends: 
     R (>= 3.5)
 LazyData: true

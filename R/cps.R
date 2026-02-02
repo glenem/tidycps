@@ -100,20 +100,20 @@ get_basic_cps <- function(year=2000:2025,
 sex_indicators <- function(df){
   df <- df |>
     mutate(
-      male = ifelse(PESEX==1, 1, 0),
-      female = ifelse(PESEX==2, 1, 0)
+      male = ifelse(.data$PESEX==1, 1, 0),
+      female = ifelse(.data$PESEX==2, 1, 0)
     )
 }
 
 labforce_emp_status <- function(df){
   df <- df |>
     mutate(
-      civ_noninst_pop = ifelse(PRPERTYP == 2 & PRTAGE>=16, 1, 0),
-      unemp = ifelse(3 <= PEMLR & PEMLR <= 4 , 1, 0),
-      emp = ifelse(1 <= PEMLR & PEMLR <= 2 , 1, 0),
-      labforce = ifelse(1 <= PEMLR & PEMLR <= 4 , 1, 0),
-      not_in_labforce = ifelse(5 <= PEMLR & PEMLR <= 7 , 1, 0),
-      not_in_universe = ifelse(PEMLR==-1, 1, 0)
+      civ_noninst_pop = ifelse(.data$PRPERTYP == 2 & .data$PRTAGE>=16, 1, 0),
+      unemp = ifelse(3 <= .data$PEMLR & .data$PEMLR <= 4 , 1, 0),
+      emp = ifelse(1 <= .data$PEMLR & .data$PEMLR <= 2 , 1, 0),
+      labforce = ifelse(1 <= .data$PEMLR & .data$PEMLR <= 4 , 1, 0),
+      not_in_labforce = ifelse(5 <= .data$PEMLR & .data$PEMLR <= 7 , 1, 0),
+      not_in_universe = ifelse(.data$PEMLR==-1, 1, 0)
     )
   return(df)
 }
@@ -121,12 +121,12 @@ labforce_emp_status <- function(df){
 age_indicators <- function(df){
   df <- df |>
     mutate(
-      age_16to24 = ifelse(PRTAGE>=16 & PRTAGE<=24, 1, 0),
-      age_25to34 = ifelse(PRTAGE>=25 & PRTAGE<=34, 1, 0),
-      age_35to44 = ifelse(PRTAGE>=35 & PRTAGE<=44, 1, 0),
-      age_45to54 = ifelse(PRTAGE>=45 & PRTAGE<=54, 1, 0),
-      age_55to64 = ifelse(PRTAGE>=55 & PRTAGE<=64, 1, 0),
-      age_65over = ifelse(PRTAGE>=65, 1, 0),
-      prime_age_25to54 = ifelse(PRTAGE>=25 & PRTAGE<=54, 1, 0),
+      age_16to24 = ifelse(.data$PRTAGE>=16 & .data$PRTAGE<=24, 1, 0),
+      age_25to34 = ifelse(.data$PRTAGE>=25 & .data$PRTAGE<=34, 1, 0),
+      age_35to44 = ifelse(.data$PRTAGE>=35 & .data$PRTAGE<=44, 1, 0),
+      age_45to54 = ifelse(.data$PRTAGE>=45 & .data$PRTAGE<=54, 1, 0),
+      age_55to64 = ifelse(.data$PRTAGE>=55 & .data$PRTAGE<=64, 1, 0),
+      age_65over = ifelse(.data$PRTAGE>=65, 1, 0),
+      prime_age_25to54 = ifelse(.data$PRTAGE>=25 & .data$PRTAGE<=54, 1, 0),
     )
 }
