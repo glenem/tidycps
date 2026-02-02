@@ -18,7 +18,11 @@ Imports:
     jsonlite,
     lubridate,
     stringr,
-    utils
+    utils, 
+    crayon, 
+    purrr,
+    rlang,
+    tidyr
 Depends: 
     R (>= 3.5)
 LazyData: true

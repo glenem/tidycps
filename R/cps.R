@@ -14,13 +14,8 @@
 #' @return A tibble or tidyverse-ready data frame of CPS micro data.
 #' @examples
 #' # Load libraries
-#' pacman::p_load('tidycps',
-#' 'tidyverse',
-#' 'httr2',
-#' "glue",
-#' "jsonlite",
-#' 'ggplot2'
-#' )
+#' library('tidycps')
+#' library('dplyr')
 #'
 #' # Pull December 2025 basic monthly CPS data for Florida
 #' df <- get_basic_cps(year = 2025, month = 'dec',
@@ -68,6 +63,17 @@ get_basic_cps <- function(year=2000:2025,
     month <- str_to_lower(month)
   }
 
+  # Error message for October 2025 CPS
+  if (year == 2025 && month == "oct") {
+
+    msg_cps <- c(crayon::red(stringr::str_wrap("Due to the Federal Government shutdown in 2025, there are not estimates available for the October 2025 CPS.")),
+                 crayon::cyan(stringr::str_wrap("If you are trying to pull monthly data for the entire year of 2025, please make sure to omit October in your API call.")),
+                 crayon::cyan(stringr::str_wrap("Thank you!"))
+                 )
+    rlang::abort(msg_cps)
+
+  }
+
   message(sprintf("Getting data from the %s baisc monthly CPS", paste0(str_to_title(month), "-", year)))
 
   # State Control Flow
@@ -100,6 +106,8 @@ get_basic_cps <- function(year=2000:2025,
     req_headers("Accept" = "application/json") |>
     req_perform() |>
   resp_body_json()
+  Sys.sleep(3)
+
 
   df <- as_tibble(
     do.call(rbind, lol[-1]),
@@ -138,6 +146,45 @@ get_basic_cps <- function(year=2000:2025,
   )
 }
 
+#' Get a Time Series of Basic Monthly CPS micro data
+#' @param year Numeric, the year you want to pull the data for
+#' @param month Character string, the month you want to pull the data for
+#' @param variables Character string or vector of characters strings of variables IDs. tidycps uses these IDs to pull the micro data.
+#' @param weight Character string to indicate the type of weight to use in your analysis: person, household or veteran.
+#' @param state Character string for the state abbreviation or numeric for the state FIPS code. If nothing is entered it pulls the micro data for every state in the United States.
+#' @param api_key US Census API Key. Recommend to put your census key in .Renviorn for easy access.
+#' @return A tibble or tidyverse-ready data frame of CPS micro data.
+#' @export
+get_cps_micro_ts <- function(year=2000:2025,
+                          month =1:12,
+                          variables = NULL,
+                          weight = c("person", "household", "veteran"),
+                          state = NULL,
+                          api_key = Sys.getenv("USCENSUS_KEY")
+){
+
+  grid <- tidyr::expand_grid(
+    year_val  = year,
+    month_val = month
+  )
+
+
+  purrr::pmap_dfr(
+    grid,
+    function(year_val, month_val) {
+      get_basic_cps(
+        year      = year_val,
+        month     = month_val,
+        variables = variables,
+        weight    = weight,
+        state     = state,
+        api_key   = api_key
+      )
+    }
+  )
+}
+
+
 # Function to help make CPS variables more useful ----
 sex_indicators <- function(df){
   df <- df |>
@@ -147,6 +194,10 @@ sex_indicators <- function(df){
     )
 }
 
+#' Create laborforce and employment status indicators
+#' @param df A tibble or data frame that contains the variables PRPERTYP, PRTAGE, and PEMLR
+#' @return A tibble or data frame with the new variables added
+#' @export
 labforce_emp_status <- function(df){
   df <- df |>
     mutate(
