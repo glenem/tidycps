@@ -1,11 +1,53 @@
+#'  Get basic monthly CPS micro data
 #' @import dplyr
 #' @import lubridate
 #' @import stringr
 #' @import httr2
 #' @import glue
 #' @import jsonlite
-
-
+#' @param year Numeric, the year you want to pull the data for
+#' @param month Character string, the month you want to pull the data for
+#' @param variables Character string or vector of characters strings of variables IDs. tidycps uses these IDs to pull the micro data.
+#' @param weight Character string to indicate the type of weight to use in your analysis: person, household or veteran.
+#' @param state Character string for the state abbreviation or numeric for the state FIPS code. If nothing is entered it pulls the micro data for every state in the United States.
+#' @param api_key US Census API Key. Recommend to put your census key in .Renviorn for easy access.
+#' @return A tibble or tidyverse-ready data frame of CPS micro data.
+#' @examples
+#' # Load libraries
+#' pacman::p_load('tidycps',
+#' 'tidyverse',
+#' 'httr2',
+#' "glue",
+#' "jsonlite",
+#' 'ggplot2'
+#' )
+#'
+#' # Pull December 2025 basic monthly CPS data for Florida
+#' df <- get_basic_cps(year = 2025, month = 'dec',
+#' weight = "person",
+#' variables = c(
+#' "PRPERTYP", # person type
+#' "PRTAGE", # age
+#' "PESEX", # sex
+#' "PTDTRACE", # race
+#'   "PEHSPNON", # Hispanic
+#'  "PEEDUCA", # educational attainment
+#'   "PEMLR", # labor force status
+#'   "COUNTY"
+#' ),
+#' state = 'fl'
+#' )
+#'
+#' # Calculate the Florida's December 2025 unemployment rate
+#' fl_labforce_emp <- df |>
+#'   labforce_emp_status() |>
+#'   group_by(state, DATE) |>
+#'   summarize(
+#'     unemployment = sum(unemp*(PWCMPWGT)),
+#'     labor_force = sum(labforce*(PWCMPWGT)),
+#'     unemployment_rate = (unemployment/labor_force)*100
+#'   )
+#'@export
 
 
 # Function to get data from the basic monthly cps in a df -----
