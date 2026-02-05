@@ -66,9 +66,9 @@ get_basic_cps <- function(year=2000:2025,
   # Error message for October 2025 CPS
   if (year == 2025 && month == "oct") {
 
-    msg_cps <- c(crayon::red(stringr::str_wrap("Due to the Federal Government shutdown in 2025, there are not estimates available for the October 2025 CPS.")),
-                 crayon::cyan(stringr::str_wrap("If you are trying to pull monthly data for the entire year of 2025, please make sure to omit October in your API call.")),
-                 crayon::cyan(stringr::str_wrap("Thank you!"))
+    msg_cps <- c(crayon::red(stringr::str_wrap("Due to the lapse in appropriations from October 1 through November 12, 2025, no data collection occurred for the CPS in October.")),
+                  crayon::red(stringr:str_wrap("As a result, there is no microdata file for October 2025. Survey operations resumed in November.")),
+                 crayon::cyan(stringr::str_wrap("If you are trying to pull monthly data for the entire year of 2025, please make sure to omit October in your API call."))
                  )
     rlang::abort(msg_cps)
 
@@ -211,15 +211,34 @@ labforce_emp_status <- function(df){
   return(df)
 }
 
-age_indicators <- function(df){
+age_category <- function(df){
   df <- df |>
     mutate(
-      age_16to24 = ifelse(.data$PRTAGE>=16 & .data$PRTAGE<=24, 1, 0),
-      age_25to34 = ifelse(.data$PRTAGE>=25 & .data$PRTAGE<=34, 1, 0),
-      age_35to44 = ifelse(.data$PRTAGE>=35 & .data$PRTAGE<=44, 1, 0),
-      age_45to54 = ifelse(.data$PRTAGE>=45 & .data$PRTAGE<=54, 1, 0),
-      age_55to64 = ifelse(.data$PRTAGE>=55 & .data$PRTAGE<=64, 1, 0),
-      age_65over = ifelse(.data$PRTAGE>=65, 1, 0),
-      prime_age_25to54 = ifelse(.data$PRTAGE>=25 & .data$PRTAGE<=54, 1, 0),
+      age_category =  ifelse(.data$PRTAGE>=16 & .data$PRTAGE<=24, "age_16to24",
+                      ifelse(.data$PRTAGE>=25 & .data$PRTAGE<=34, "age_25to34",
+                      ifelse(.data$PRTAGE>=35 & .data$PRTAGE<=44, "age_35to44",
+                      ifelse(.data$PRTAGE>=45 & .data$PRTAGE<=54, "age_45to54",
+                      ifelse(.data$PRTAGE>=55 & .data$PRTAGE<=64, "age_55to64",
+                      ifelse(.data$PRTAGE>=65, "age_65over",
+                      ifelse(.data$PRTAGE>=25 & .data$PRTAGE<=54, "prime_age_25to54",
+                      "age_0to15"
+))))))))
+}
+
+summarize_emp_unr <- function(df, by=c('state', 'Date')){
+
+  wt <- names(df)[grep('WGT', names(df))]
+
+  summarize_emp_unr <- df |>
+    labforce_emp_status() |>
+    filter(!!sym(wt)!=0) |>
+    group_by(across(all_of(by))) |>
+    summarize(
+      unemployment = sum(.data$unemp*(!!sym(wt))),
+      employment = sum(.data$emp*(!!sym(wt))),
+      labor_force = sum(.data$labforce*(!!sym(wt))),
+      unemployment_rate = (.data$unemployment/.data$labor_force)*100
     )
+
+return(summarize_emp_unr)
 }
