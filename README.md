@@ -21,8 +21,7 @@ variables = c(
 "PTDTRACE", # race
   "PEHSPNON", # Hispanic
  "PEEDUCA", # educational attainment
-  "PEMLR", # labor force status
-  "COUNTY"
+  "PEMLR" # labor force status
 ),
 state = 'fl'
 )
